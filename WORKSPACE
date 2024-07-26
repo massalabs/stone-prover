@@ -20,35 +20,25 @@ git_repository(
 
 git_repository(
     name = "com_github_gtest_gtest",
-    commit = "703bd9caab50b139428cea1aaff9974ebee5742e",
+    # commit = "703bd9caab50b139428cea1aaff9974ebee5742e",
     remote = "https://github.com/google/googletest.git",
-    shallow_since = "1570114335 -0400",
-    # tag = "release-1.11.0",
+    # shallow_since = "1570114335 -0400",
+    tag = "v1.15.0",
 )
-
-BAZEL_TOOLCHAIN_TAG = "0.8"
-
-BAZEL_TOOLCHAIN_SHA = "f121449dd565d59274b7421a62f3ed1f16ad7ceab4575c5b34f882ba441093bd"
 
 http_archive(
-    name = "com_grail_bazel_toolchain",
-    canonical_id = BAZEL_TOOLCHAIN_TAG,
-    patch_args = [
-        "-p1",
-    ],  # from man patch, "-pnum  or  --strip=num" Strip  the smallest prefix containing num leading slashes from each file name found in the patch file.
-    patches = ["//bazel_utils/patches:llvm_toolchain.patch"],
-    sha256 = BAZEL_TOOLCHAIN_SHA,
-    strip_prefix = "toolchains_llvm-{tag}".format(tag = BAZEL_TOOLCHAIN_TAG),
-    url = "https://starkware-third-party.s3.us-east-2.amazonaws.com/bazel/toolchains_llvm-{tag}.tar.gz".format(
-        tag = BAZEL_TOOLCHAIN_TAG,
-    ),
+    name = "toolchains_llvm",
+    sha256 = "e91c4361f99011a54814e1afbe5c436e0d329871146a3cd58c23a2b4afb50737",
+    strip_prefix = "toolchains_llvm-1.0.0",
+    canonical_id = "1.0.0",
+    url = "https://github.com/bazel-contrib/toolchains_llvm/releases/download/1.0.0/toolchains_llvm-1.0.0.tar.gz",
 )
 
-load("@com_grail_bazel_toolchain//toolchain:deps.bzl", "bazel_toolchain_dependencies")
+load("@toolchains_llvm//toolchain:deps.bzl", "bazel_toolchain_dependencies")
 
 bazel_toolchain_dependencies()
 
-load("@com_grail_bazel_toolchain//toolchain:rules.bzl", "llvm_toolchain")
+load("@toolchains_llvm//toolchain:rules.bzl", "llvm_toolchain")
 
 llvm_toolchain(
     name = "llvm_toolchain",
@@ -64,6 +54,7 @@ llvm_toolchain(
             "-Wall",
             "-Wextra",
             "-Wno-mismatched-tags",
+            "-DBACKWARD_HAS_DW=0",
         ],
     },
     cxx_flags = {
@@ -82,7 +73,7 @@ llvm_toolchain(
             "-lm",
         ],
     },
-    llvm_version = "12.0.0",
+    llvm_version = "17.0.6",
     opt_compile_flags = {
         "": [
             "-g0",
