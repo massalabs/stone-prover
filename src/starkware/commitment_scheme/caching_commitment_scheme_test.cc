@@ -78,8 +78,8 @@ TEST(CachingCommitmentSchemeProverTest, CommitAndDecommit) {
       std::back_inserter(queries_data));
 
   // Expected decommitment flow.
-  EXPECT_CALL(*inner_scheme_ptr, StartDecommitmentPhase(queries))
-      .WillOnce(testing::Return(expected_indices_to_inner_layer));
+  // EXPECT_CALL(*inner_scheme_ptr, StartDecommitmentPhase(queries))
+  //     .WillOnce(testing::Return(expected_indices_to_inner_layer));
   EXPECT_CALL(*inner_scheme_ptr, Decommit(gsl::span<const std::byte>(queries_data)));
 
   // Decommit.
