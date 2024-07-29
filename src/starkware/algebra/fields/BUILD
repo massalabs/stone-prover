@@ -36,10 +36,15 @@ cc_test(
 
 cc_library(
     name = "prime_field_element",
-    srcs = [
-        "prime_field_element.S",
-        "prime_field_element.cc",
-    ],
+    srcs = select({
+        "@platforms//cpu:x86_64" : [
+            "prime_field_element.S",
+            "prime_field_element.cc",
+        ],
+        "//conditions:default": [
+            "prime_field_element.cc",
+        ]
+    }),
     hdrs = [
         "big_prime_constants.h",
         "prime_field_element.h",
