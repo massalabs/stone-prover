@@ -98,7 +98,6 @@ constexpr uint64_t SafeSub(const uint64_t minuend, const uint64_t subtrahend) {
         "Got overflow/underflow in " + std::to_string(a) + " + " + std::to_string(b));
     return res;
   }
-}
 #endif
 
 /*
