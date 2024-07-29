@@ -82,13 +82,24 @@ constexpr uint64_t SafeSub(const uint64_t minuend, const uint64_t subtrahend) {
 /*
   Computes x + y. This function fails if the result overflows or underflows.
 */
-inline int64_t SafeSignedAdd(const int64_t a, const int64_t b) {
-  int64_t res;
-  ASSERT_RELEASE(
-      !__builtin_saddl_overflow(a, b, &res),
-      "Got overflow/underflow in " + std::to_string(a) + " + " + std::to_string(b));
-  return res;
+#ifdef __APPLE__
+  inline int64_t SafeSignedAdd(const int64_t a, const int64_t b) {
+    int64_t res;
+    ASSERT_RELEASE(
+        !__builtin_saddll_overflow(a, b, &res),
+        "Got overflow/underflow in " + std::to_string(a) + " + " + std::to_string(b));
+    return res;
+  }
+#else
+  inline int64_t SafeSignedAdd(const int64_t a, const int64_t b) {
+    int64_t res;
+    ASSERT_RELEASE(
+        !__builtin_saddl_overflow(a, b, &res),
+        "Got overflow/underflow in " + std::to_string(a) + " + " + std::to_string(b));
+    return res;
+  }
 }
+#endif
 
 /*
   Computes -x. This function fails if the result overflows (this happens if x = -2**63).
