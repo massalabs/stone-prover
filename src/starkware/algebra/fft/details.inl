@@ -375,6 +375,35 @@ inline void FftNaturalToReverseLoop<PrimeFieldElement<252, 0>>(
 }
 #endif
 
+#ifdef __APPLE__
+
+template <>
+inline void FftNaturalToReverseLoop<PrimeFieldElement<252, 0>>(
+    const PrimeFieldElement<252, 0>* src, size_t length,
+    const PrimeFieldElement<252, 0>* twiddle_factors, uint64_t distance,
+    PrimeFieldElement<252, 0>* dst) {
+  // Note that when distance == 1 we use n/2 twiddle factors.
+  uint64_t twiddle_shift = 1 + SafeLog2(distance);
+
+  static_assert(IsPowerOfTwo(sizeof(PrimeFieldElement<252, 0>)));
+  // In the NaturalToReverse case we only need to mask out the lsb bits.
+  uint64_t aligned_twiddle_mask = ~static_cast<uint64_t>((sizeof(PrimeFieldElement<252, 0>) - 1));
+
+  // NOLINTNEXTLINE: do not use pointer arithmetic.
+  const PrimeFieldElement<252, 0>* src_plus_distance = src + distance;
+  // NOLINTNEXTLINE: do not use pointer arithmetic.
+  const PrimeFieldElement<252, 0>* src_end = src + length;
+
+  uint64_t src_to_dst = (dst - src) * sizeof(PrimeFieldElement<252, 0>);
+  uint64_t distance_in_bytes = distance * sizeof(PrimeFieldElement<252, 0>);
+
+  Prime0FftLoop(
+      src_plus_distance, src_end, src_to_dst, distance_in_bytes, twiddle_factors, twiddle_shift,
+      aligned_twiddle_mask);
+}
+#endif
+
+
 template <typename FieldElementT>
 void FftUsingPrecomputedTwiddleFactorsInner(
     gsl::span<const FieldElementT> src, gsl::span<const FieldElementT> twiddle_factors,
