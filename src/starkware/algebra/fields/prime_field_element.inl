@@ -20,7 +20,11 @@ namespace starkware {
 /*
   This function is implemented in assembly, in prime_field_elements.S .
 */
-extern "C" BigInt<4> UnreducedMontMulPrime0(const BigInt<4>& x, const BigInt<4>& y);
+static inline BigInt<4> UnreducedMontMulPrime0(const BigInt<4>& x, const BigInt<4>& y) {
+  (void) x;
+  (void) y;
+  return BigInt<4>();
+}
 
 /*
   This function can be used for both reverse order and natural order Ffts
@@ -38,10 +42,12 @@ extern "C" BigInt<4> UnreducedMontMulPrime0(const BigInt<4>& x, const BigInt<4>&
 
   This function is implemented in assembly, in prime_field_elements.S .
 */
-extern "C" void Prime0FftLoop(
+static inline void Prime0FftLoop(
     const PrimeFieldElement<252, 0>* src_plus_distance, const PrimeFieldElement<252, 0>* src_end,
     uint64_t src_to_dst, uint64_t distance_in_bytes, const PrimeFieldElement<252, 0>* twiddle_array,
-    uint64_t twiddle_shift, uint64_t aligned_twiddle_mask);
+    uint64_t twiddle_shift, uint64_t aligned_twiddle_mask) {
+      return;
+    }
 
 /*
   Specific implementation of UnreducedMontgomeryMul for PrimeFieldElement<252,0> for performance
