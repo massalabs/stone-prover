@@ -375,6 +375,7 @@ inline void FftNaturalToReverseLoop<PrimeFieldElement<252, 0>>(
 }
 #endif
 
+/*
 #ifdef __APPLE__
 
 template <>
@@ -402,6 +403,7 @@ inline void FftNaturalToReverseLoop<PrimeFieldElement<252, 0>>(
       aligned_twiddle_mask);
 }
 #endif
+*/
 
 
 template <typename FieldElementT>
